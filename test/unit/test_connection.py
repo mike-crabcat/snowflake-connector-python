@@ -141,11 +141,8 @@ def test_is_still_running():
 def test_partner_env_var(mockSnowflakeRestfulPostRequest):
     PARTNER_NAME = "Amanda"
 
-    request_body = {}
-
     def mock_post_request(url, headers, json_body, **kwargs):
-        nonlocal request_body
-        request_body = json.loads(json_body)
+        mock_post_request.request_body = json.loads(json_body)
         return {
             "success": True,
             "message": None,
@@ -171,4 +168,7 @@ def test_partner_env_var(mockSnowflakeRestfulPostRequest):
         )
         assert con.application == PARTNER_NAME
 
-    assert request_body["data"]["CLIENT_ENVIRONMENT"]["APPLICATION"] == PARTNER_NAME
+    assert (
+        mock_post_request.request_body["data"]["CLIENT_ENVIRONMENT"]["APPLICATION"]
+        == PARTNER_NAME
+    )
